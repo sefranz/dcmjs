@@ -301,12 +301,6 @@ class ImageNormalizer extends Normalizer {
             log.error("Missing number or frames not supported");
             return;
         }
-        if (Number(ds.NumberOfFrames) === 1) {
-            log.error(
-                "Single frame instance of multiframe class not supported"
-            );
-            return;
-        }
         if (!ds.PixelRepresentation) {
             // Required tag: guess signed
             ds.PixelRepresentation = 1;
