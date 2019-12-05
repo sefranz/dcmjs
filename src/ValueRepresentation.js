@@ -434,9 +434,18 @@ class DecimalString extends StringRepresentation {
     }
 
     readBytes(stream, length) {
+        const BACKSLASH = String.fromCharCode(0x5c);
         //return this.readNullPaddedString(stream, length).trim();
         let ds = stream.readString(length);
         ds = ds.replace(/[^0-9.\\\-+e]/gi, "");
+        if (ds.indexOf(BACKSLASH) !== -1) {
+            // handle decimal string with multiplicity
+            const dsArray = ds.split(BACKSLASH);
+            ds = dsArray.map(ds => Number(ds));
+        } else {
+            ds = Number(ds);
+        }
+
         return ds;
     }
 }
@@ -459,7 +468,7 @@ class FloatingPointSingle extends ValueRepresentation {
     }
 
     readBytes(stream) {
-        return stream.readFloat();
+        return Number(stream.readFloat());
     }
 
     writeBytes(stream, value) {
@@ -481,7 +490,7 @@ class FloatingPointDouble extends ValueRepresentation {
     }
 
     readBytes(stream) {
-        return stream.readDouble();
+        return Number(stream.readDouble());
     }
 
     writeBytes(stream, value) {
@@ -502,7 +511,7 @@ class IntegerString extends StringRepresentation {
 
     readBytes(stream, length) {
         //return this.readNullPaddedString(stream, length);
-        return stream.readString(length).trim();
+        return Number(stream.readString(length).trim());
     }
 }
 
